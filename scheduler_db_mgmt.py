@@ -1,8 +1,8 @@
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Float, Integer, String, DateTime
+from sqlalchemy import Column, Float, Integer, String, DateTime, ForeignKey
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 
 #connstr = 'sqlite:///:memory:'
 #connstr = 'sqlite:////tmp/iris.sqlite'
@@ -19,6 +19,7 @@ Base = declarative_base()
 class ETLRun(Base):
     __tablename__ = 'etl_run'
     id = Column(Integer, primary_key=True)
+    
     name = Column(String)
     start = Column(DateTime)
     end = Column(DateTime)
@@ -26,12 +27,14 @@ class ETLRun(Base):
 class ETLModuleRun(Base):
     __tablename__ = 'etl_module_run'
     id = Column(Integer, primary_key=True)
-    etlrun_id = Column(Integer)
-    task_id = Column(Integer)
+    etl_run_id = Column(Integer, ForeignKey('etl_run.id'))
+    #etl_run = relationship("ETLRun", back_populates="modules")
+    task_id = Column(String)
+    
     name = Column(String)
-    input = Column(string)
-    output = Column(string)
-    conf = Column(string)
+    input = Column(String)
+    output = Column(String)
+    conf = Column(String)
     start = Column(DateTime)
     end = Column(DateTime)
     status = Column(String)
