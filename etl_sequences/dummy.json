@@ -1,0 +1,20 @@
+[
+    {
+        "module_name" : "dummy_extractor",
+        "input" : "",
+        "output" : "/dev/null",
+        "conf" : "/dev/null"
+    },
+    {
+        "module_name" : "dummy_transformer",
+        "input" : "/dev/null",
+        "output" : "/dev/null",
+        "conf" : "/dev/null"
+    },
+    {
+        "module_name" : "dummy_loader",
+        "input" : "",
+        "output" : "/dev/null",
+        "conf" : ""
+    }
+]

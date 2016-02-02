@@ -1,0 +1,20 @@
+[
+    {
+        "module_name" : "test_extractor",
+        "input" : "None",
+        "output" : "/dev/null",
+        "conf" : "/dev/null"
+    },
+    {
+        "module_name" : "test_transformer",
+        "input" : "/dev/null",
+        "output" : "/dev/null",
+        "conf" : "/dev/null"
+    },
+    {
+        "module_name" : "test_loader",
+        "input" : "None",
+        "output" : "/dev/null",
+        "conf" : "None"
+    }
+]
