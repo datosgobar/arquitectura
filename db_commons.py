@@ -6,7 +6,11 @@ from sqlalchemy.orm import sessionmaker
 
 from flask.ext.jsontools import JsonSerializableBase
 
-engine = create_engine('sqlite:///orm_in_detail.sqlite')
+#connstr = 'sqlite:///:memory:'
+#connstr = 'sqlite:////tmp/iris.sqlite'
+connstr = 'postgresql+psycopg2://data_warehouse_admin:pass@localhost/data_warehouse'
+
+engine = create_engine(connstr)
 
 def get_session() :
     engine = create_engine(connstr, echo=True)
@@ -25,9 +29,5 @@ class Iris(Base):
     petal_width = Column(Float)
     flower_class = Column(String)
 
-
-#connstr = 'sqlite:///:memory:'
-#connstr = 'sqlite:////tmp/iris.sqlite'
-connstr = 'postgresql+psycopg2://data_warehouse_admin:pass@localhost/data_warehouse'
 
 
