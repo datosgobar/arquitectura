@@ -23,6 +23,7 @@ class ETLRun(Base):
     name = Column(String)
     start = Column(DateTime)
     end = Column(DateTime)
+    status = Column(String)
 
 class ETLModuleRun(Base):
     __tablename__ = 'etl_module_run'

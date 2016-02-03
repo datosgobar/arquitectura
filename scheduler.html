@@ -1,0 +1,218 @@
+<html>
+
+<head>
+
+<!--
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> 
+-->
+<script src="/static/handlebars.min.js"></script>
+<script src="/static/jquery-2.2.0.min.js"></script>
+<script src="/static/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/bootstrap.min.css"> 
+
+<style>
+.fill { 
+    min-height: 100%;
+    height: 100%;
+}
+</style>
+
+</head>
+
+<body>
+<div id="container" class="container-fluid">
+</div>
+
+<script id="module-partial" type="text/x-handlebars-template">
+                <div class="panel panel-default panel-{{get_status_class_suffix status}}">
+                    <div class="panel-heading">
+                        {{task_id}} - {{name}}
+                    </div>
+                    <div class="panel-body">
+                        <strong>Input:</strong>{{input}}<br>
+                        <strong>Output:</strong>{{output}}<br>
+                        <strong>Conf:</strong>{{conf}}<br>
+                        <strong>Start:</strong>{{start}}<br>    
+                        <strong>End:</strong>{{end}}<br>
+                        <strong>Status:</strong>{{status}}<br>
+                    </div>
+                </div>
+</script>
+
+<script id="etlrun-partial" type="text/x-handlebars-template">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>{{name}} - {{id}}</h4>
+            </div>
+            <div class="panel-body">
+                <strong>Start:</strong>{{start}}<br>
+                <strong>End:</strong>{{end}}<br>
+                <strong>Status:</strong>{{status}}<br>
+                {{#each modules}}
+                    {{> module}}
+                {{/each}}
+            </div>
+        </div>
+</script>
+
+
+<script id="entry-template" type="text/x-handlebars-template">
+  <div class="row">
+    <div class="col-md-4 bg-info fill">
+        <h2>Iniciados</h2>
+        {{#each new_etlruns}}
+            {{> etlrun}}
+        {{/each}}
+    </div>
+
+    <div class="col-md-4 bg-danger fill">
+        <h2>Fallidos</h2>
+        {{#each failed_etlruns}}
+            {{> etlrun}}
+        {{/each}}
+    </div>
+  
+    <div class="col-md-4 bg-success fill">
+        <h2>Terminados</h2>
+        {{#each successful_etlruns}}
+            {{> etlrun}}
+        {{/each}}
+    </div>
+    
+  </div>
+
+</script>
+
+<script>
+test_data = [
+    {
+        "id" : "ETL RUN ID 1",
+        "name" : "ETL RUN NAME",
+        "start" : "end",
+        "end" : "start",
+        "status" : "PENDING",
+        "modules" : [{
+            "task_id" : "task_id 1",
+            "name" : "task name AAA",
+            "input" : "input",
+            "output" : "output",
+            "conf" : "conf",
+            "start" : "start",
+            "end" : "end",
+            "status" : "PENDING"
+        },{
+            "task_id" : "task_id 2",
+            "name" : "task name",
+            "input" : "input",
+            "output" : "output",
+            "conf" : "conf",
+            "start" : "start",
+            "end" : "end",
+            "status" : "PENDING"
+        }]
+    },
+    {
+        "id" : "ETL RUN ID",
+        "name" : "ETL RUN NAME",
+        "start" : "end",
+        "end" : "start",
+        "status" : "PENDING",
+        "modules" : [{
+            "task_id" : "task_id",
+            "name" : "task name",
+            "input" : "input",
+            "output" : "output",
+            "conf" : "conf",
+            "start" : "start",
+            "end" : "end",
+            "status" : "PENDING"
+        }]
+    },
+    {
+        "id" : "ETL RUN ID",
+        "name" : "ETL RUN NAME",
+        "start" : "end",
+        "end" : "start",
+        "status" : "FAILURE",
+        "modules" : [{
+            "task_id" : "task_id",
+            "name" : "task name BBB",
+            "input" : "input",
+            "output" : "output",
+            "conf" : "conf",
+            "start" : "start",
+            "end" : "end",
+            "status" : "FAILURE"
+        }]
+    },
+    {
+        "id" : "ETL RUN ID",
+        "name" : "ETL RUN NAME",
+        "start" : "end",
+        "end" : "start",
+        "status" : "SUCCESS",
+        "modules" : [{
+            "task_id" : "task_id",
+            "name" : "task name",
+            "input" : "input",
+            "output" : "output",
+            "conf" : "conf",
+            "start" : "start",
+            "end" : "end",
+            "status" : "SUCCESS"
+        }]
+    }
+];
+
+var source   = $("#entry-template").html();
+Handlebars.registerPartial("module", $("#module-partial").html());
+Handlebars.registerPartial("etlrun", $("#etlrun-partial").html());
+Handlebars.registerHelper('get_status_class_suffix', function(status) {
+    console.log(status);
+    if (status == "PENDING") {
+        return "info";
+    }
+    if (status == "STARTED") {
+        return "success";
+    }
+    if (status == "SUCCESS") {
+        return "success";
+    }
+    if (status == "FAILURE") {
+        return "danger";
+    }
+    return "normal";
+});
+var template = Handlebars.compile(source);
+
+build_panels = function (data) {
+    var context = {};
+    context["new_etlruns"] = data.filter(function(obj) {
+        return obj.status === "PENDING";
+    });
+    context["failed_etlruns"] = data.filter(function(obj) {
+        return obj.status === "FAILURE";
+    });
+    context["successful_etlruns"] = data.filter(function(obj) {
+        return obj.status === "SUCCESS";
+    });
+
+    var html = template(context);
+    //console.log(data);
+    //console.log(test_data);
+    $('#container').empty();
+    $('#container').append($(html));
+    
+}
+
+build_panels(test_data);
+//var intervalID = window.setInterval(function(){$.getJSON("/getstatus", build_panels)}, 500);
+
+</script>
+
+
+</body>
+</html>
