@@ -8,16 +8,35 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> 
 -->
-<script src="/static/handlebars.min.js"></script>
-<script src="/static/jquery-2.2.0.min.js"></script>
-<script src="/static/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/bootstrap.min.css"> 
+<script src="static/handlebars.min.js"></script>
+<script src="static/jquery-2.2.0.min.js"></script>
+<script src="static/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="static/bootstrap.min.css"> 
 
 <style>
 .fill { 
     min-height: 100%;
     height: 100%;
 }
+
+.reduce_margin {
+    margin-bottom: 5px;
+}
+
+.reduce_padding {
+    padding: 5px;
+}
+
+.panel-heading {
+    padding: 1px 1px 1px 15px;
+    border-bottom: 1px solid transparent;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
 </style>
 
 </head>
@@ -27,11 +46,11 @@
 </div>
 
 <script id="module-partial" type="text/x-handlebars-template">
-                <div class="panel panel-default panel-{{get_status_class_suffix status}}">
+                <div class="panel panel-default panel-{{get_status_class_suffix status}} reduce_margin">
                     <div class="panel-heading">
-                        {{task_id}} - {{name}}
+                         <a data-toggle="collapse" href="#collapse-{{id}}">{{id}} - {{name}}</a>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body panel-collapse collapse reduce_padding" id='collapse-{{id}}'>
                         <strong>Input:</strong>{{input}}<br>
                         <strong>Output:</strong>{{output}}<br>
                         <strong>Conf:</strong>{{conf}}<br>
@@ -45,9 +64,9 @@
 <script id="etlrun-partial" type="text/x-handlebars-template">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4>{{name}} - {{id}}</h4>
+                <h4>{{id}} - {{name}}</h4>
             </div>
-            <div class="panel-body">
+            <div class="panel-body reduce_padding">
                 <strong>Start:</strong>{{start}}<br>
                 <strong>End:</strong>{{end}}<br>
                 <strong>Status:</strong>{{status}}<br>
@@ -95,7 +114,8 @@ test_data = [
         "end" : "start",
         "status" : "PENDING",
         "modules" : [{
-            "task_id" : "task_id 1",
+            "id" : "1",
+            "task_id" : "1",
             "name" : "task name AAA",
             "input" : "input",
             "output" : "output",
@@ -104,7 +124,8 @@ test_data = [
             "end" : "end",
             "status" : "PENDING"
         },{
-            "task_id" : "task_id 2",
+            "id" : "2",
+            "task_id" : "2",
             "name" : "task name",
             "input" : "input",
             "output" : "output",
@@ -121,7 +142,8 @@ test_data = [
         "end" : "start",
         "status" : "PENDING",
         "modules" : [{
-            "task_id" : "task_id",
+            "id" : "3",
+            "task_id" : "3",
             "name" : "task name",
             "input" : "input",
             "output" : "output",
@@ -138,7 +160,8 @@ test_data = [
         "end" : "start",
         "status" : "FAILURE",
         "modules" : [{
-            "task_id" : "task_id",
+            "id" : "4",
+            "task_id" : "4",
             "name" : "task name BBB",
             "input" : "input",
             "output" : "output",
@@ -155,7 +178,8 @@ test_data = [
         "end" : "start",
         "status" : "SUCCESS",
         "modules" : [{
-            "task_id" : "task_id",
+            "id" : "5",
+            "task_id" : "5",
             "name" : "task name",
             "input" : "input",
             "output" : "output",
@@ -208,8 +232,9 @@ build_panels = function (data) {
     
 }
 
-build_panels(test_data);
-//var intervalID = window.setInterval(function(){$.getJSON("/getstatus", build_panels)}, 500);
+//build_panels(test_data);
+var intervalID = window.setInterval(function(){$.getJSON("/getstatus", build_panels)}, 500);
+//$.getJSON("/getstatus", build_panels);
 
 </script>
 

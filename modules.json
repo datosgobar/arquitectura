@@ -12,9 +12,18 @@
         "cmd" : "true"
     },
     "test_transformer" : {
-        "cmd" : "false"
+        "cmd" : "true"
     },
     "test_loader" : {
         "cmd" : "true"
+    },
+    "jose_extractor" : {
+        "cmd" : "/media/D/gobar/data_architecture/scripts/my_modules/data_module.py"
+    },
+    "jose_transformer" : {
+        "cmd" : "/media/D/gobar/data_architecture/scripts/my_modules/refine_module.py"
+    },
+    "jose_loader" : {
+        "cmd" : "/media/D/gobar/data_architecture/scripts/my_modules/push_db_module.py"
     }
 }

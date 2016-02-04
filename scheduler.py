@@ -14,7 +14,7 @@ app = Celery('task', backend='amqp', broker='amqp://guest@localhost//')
 etl_sequences_dir = "./etl_sequences/"
 modules_file = "./modules.json"
 
-debug_slowdown = 1
+debug_slowdown = 0
 #debug_slowdown = None
 
 @app.task
@@ -42,9 +42,9 @@ def start_etl(etl_run_name) :
     for i in range(len(etl_sequence)) :
         etl_module_run = ETLModuleRun(
             name=etl_sequence[i]["module_name"],
-            input=etl_sequence[i]["input"],
-            output=etl_sequence[i]["output"],
-            conf=etl_sequence[i]["conf"],
+            input=etl_sequence[i].get("input", None),
+            output=etl_sequence[i].get("output", None),
+            conf=etl_sequence[i].get("conf", None),
             status="PENDING",
             etl_run_id=etl_run.id
         )
@@ -101,7 +101,22 @@ def exec_module(self, etl_module_run_id=None, module_name=None, input=None, outp
         
     if debug_slowdown :
         time.sleep(debug_slowdown)
+
     exit_code = subprocess.call([module_cmd]+module_params)
+    
+    #proc = subprocess.Popen([module_cmd]+module_params)
+    #print proc.communicate()
+    #exit_code = proc.wait()
+    #data = sp.Popen(openRTSP + opts.split(), stdout=sp.PIPE).communicate()[0]
+    #data = subprocess.Popen([module_cmd]+module_params, stdout=subprocess.PIPE).communicate()[0]
+    
+    #proc = subprocess.Popen([module_cmd]+module_params, stdout=subprocess.PIPE)
+    #print [module_cmd]+module_params
+    #output = proc.communicate()[0]
+    #exit_code = proc.returncode 
+    #print output
+    #print data, exit_code
+    
     if debug_slowdown :
         time.sleep(debug_slowdown)
     
