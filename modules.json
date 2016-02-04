@@ -12,7 +12,7 @@
         "cmd" : "true"
     },
     "test_transformer" : {
-        "cmd" : "true"
+        "cmd" : "true   "
     },
     "test_loader" : {
         "cmd" : "true"
