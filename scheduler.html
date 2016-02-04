@@ -212,7 +212,18 @@ Handlebars.registerHelper('get_status_class_suffix', function(status) {
 });
 var template = Handlebars.compile(source);
 
+var prevdata = undefined;
 build_panels = function (data) {
+    if (prevdata) {
+        if (JSON.stringify(prevdata) == JSON.stringify(data)) {
+            prevdata = data;
+            return;
+        } else {
+            prevdata = data;
+        }
+    } else {
+        prevdata = data;
+    }
     var context = {};
     context["new_etlruns"] = data.filter(function(obj) {
         return obj.status === "PENDING";
