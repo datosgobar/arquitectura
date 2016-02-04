@@ -1,0 +1,17 @@
+[
+    {
+        "module_name" : "jose_extractor",
+        "input" : "/media/D/gobar/data_architecture/scripts/my_modules/input/",
+        "output" : "/media/D/gobar/data_architecture/scripts/my_modules/inout1/"
+    },
+    {
+        "module_name" : "jose_transformer",
+        "input" : "/media/D/gobar/data_architecture/scripts/my_modules/input1/",
+        "output" : "/media/D/gobar/data_architecture/scripts/my_modules/inout2/"
+    },
+    {
+        "module_name" : "jose_loader",
+        "input" : "/media/D/gobar/data_architecture/scripts/my_modules/input2/",
+        "output" : "/media/D/gobar/data_architecture/scripts/my_modules/output/"
+    }
+]

@@ -1,0 +1,28 @@
+<html>
+<head>
+</head>
+<body>
+
+<h1>Main</h1>
+
+<div id="chartContainer">
+  <script src="http://dimplejs.org/lib/d3.v3.4.8.js"></script>
+  <script src="http://dimplejs.org/dist/dimple.v2.1.6.min.js"></script>
+  <script type="text/javascript">
+    var svg = dimple.newSvg("#chartContainer", 590, 400);
+      d3.json("/getdata", function (data) {
+        data.forEach(function(part, index) {
+            data[index]["key"] = index;
+        });
+        var myChart = new dimple.chart(svg, data);
+        myChart.addMeasureAxis("x", "sepal_width");
+        myChart.addMeasureAxis("y", "petal_width");
+        myChart.addSeries(["key", "flower_class"], dimple.plot.bubble);
+        myChart.addLegend(200, 10, 360, 20, "right");
+        myChart.draw();
+      });
+  </script>
+</div>
+
+</body>
+</html>

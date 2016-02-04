@@ -1,0 +1,29 @@
+{
+    "dummy_extractor" : {
+        "cmd" : "./dummy_extractor.sh"
+    },
+    "dummy_transformer" : {
+        "cmd" : "./dummy_transformer.sh"
+    },
+    "dummy_loader" : {
+        "cmd" : "./dummy_loader.sh"
+    },
+    "test_extractor" : {
+        "cmd" : "true"
+    },
+    "test_transformer" : {
+        "cmd" : "true   "
+    },
+    "test_loader" : {
+        "cmd" : "true"
+    },
+    "jose_extractor" : {
+        "cmd" : "/media/D/gobar/data_architecture/scripts/my_modules/data_module.py"
+    },
+    "jose_transformer" : {
+        "cmd" : "/media/D/gobar/data_architecture/scripts/my_modules/refine_module.py"
+    },
+    "jose_loader" : {
+        "cmd" : "/media/D/gobar/data_architecture/scripts/my_modules/push_db_module.py"
+    }
+}

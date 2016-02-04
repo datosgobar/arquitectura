@@ -1,0 +1,254 @@
+<html>
+
+<head>
+
+<!--
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> 
+-->
+<script src="static/handlebars.min.js"></script>
+<script src="static/jquery-2.2.0.min.js"></script>
+<script src="static/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="static/bootstrap.min.css"> 
+
+<style>
+.fill { 
+    min-height: 100%;
+    height: 100%;
+}
+
+.reduce_margin {
+    margin-bottom: 5px;
+}
+
+.reduce_padding {
+    padding: 5px;
+}
+
+.panel-heading {
+    padding: 1px 1px 1px 15px;
+    border-bottom: 1px solid transparent;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+</style>
+
+</head>
+
+<body>
+<div id="container" class="container-fluid">
+</div>
+
+<script id="module-partial" type="text/x-handlebars-template">
+                <div class="panel panel-default panel-{{get_status_class_suffix status}} reduce_margin">
+                    <div class="panel-heading">
+                         <a data-toggle="collapse" href="#collapse-{{id}}">{{id}} - {{name}}</a>
+                    </div>
+                    <div class="panel-body panel-collapse collapse reduce_padding" id='collapse-{{id}}'>
+                        <strong>Input:</strong>{{input}}<br>
+                        <strong>Output:</strong>{{output}}<br>
+                        <strong>Conf:</strong>{{conf}}<br>
+                        <strong>Start:</strong>{{start}}<br>    
+                        <strong>End:</strong>{{end}}<br>
+                        <strong>Status:</strong>{{status}}<br>
+                    </div>
+                </div>
+</script>
+
+<script id="etlrun-partial" type="text/x-handlebars-template">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>{{id}} - {{name}}</h4>
+            </div>
+            <div class="panel-body reduce_padding">
+                <strong>Start:</strong>{{start}}<br>
+                <strong>End:</strong>{{end}}<br>
+                <strong>Status:</strong>{{status}}<br>
+                {{#each modules}}
+                    {{> module}}
+                {{/each}}
+            </div>
+        </div>
+</script>
+
+
+<script id="entry-template" type="text/x-handlebars-template">
+  <div class="row">
+    <div class="col-md-4 bg-info fill">
+        <h2>Iniciados</h2>
+        {{#each new_etlruns}}
+            {{> etlrun}}
+        {{/each}}
+    </div>
+
+    <div class="col-md-4 bg-danger fill">
+        <h2>Fallidos</h2>
+        {{#each failed_etlruns}}
+            {{> etlrun}}
+        {{/each}}
+    </div>
+  
+    <div class="col-md-4 bg-success fill">
+        <h2>Terminados</h2>
+        {{#each successful_etlruns}}
+            {{> etlrun}}
+        {{/each}}
+    </div>
+    
+  </div>
+
+</script>
+
+<script>
+test_data = [
+    {
+        "id" : "ETL RUN ID 1",
+        "name" : "ETL RUN NAME",
+        "start" : "end",
+        "end" : "start",
+        "status" : "PENDING",
+        "modules" : [{
+            "id" : "1",
+            "task_id" : "1",
+            "name" : "task name AAA",
+            "input" : "input",
+            "output" : "output",
+            "conf" : "conf",
+            "start" : "start",
+            "end" : "end",
+            "status" : "PENDING"
+        },{
+            "id" : "2",
+            "task_id" : "2",
+            "name" : "task name",
+            "input" : "input",
+            "output" : "output",
+            "conf" : "conf",
+            "start" : "start",
+            "end" : "end",
+            "status" : "PENDING"
+        }]
+    },
+    {
+        "id" : "ETL RUN ID",
+        "name" : "ETL RUN NAME",
+        "start" : "end",
+        "end" : "start",
+        "status" : "PENDING",
+        "modules" : [{
+            "id" : "3",
+            "task_id" : "3",
+            "name" : "task name",
+            "input" : "input",
+            "output" : "output",
+            "conf" : "conf",
+            "start" : "start",
+            "end" : "end",
+            "status" : "PENDING"
+        }]
+    },
+    {
+        "id" : "ETL RUN ID",
+        "name" : "ETL RUN NAME",
+        "start" : "end",
+        "end" : "start",
+        "status" : "FAILURE",
+        "modules" : [{
+            "id" : "4",
+            "task_id" : "4",
+            "name" : "task name BBB",
+            "input" : "input",
+            "output" : "output",
+            "conf" : "conf",
+            "start" : "start",
+            "end" : "end",
+            "status" : "FAILURE"
+        }]
+    },
+    {
+        "id" : "ETL RUN ID",
+        "name" : "ETL RUN NAME",
+        "start" : "end",
+        "end" : "start",
+        "status" : "SUCCESS",
+        "modules" : [{
+            "id" : "5",
+            "task_id" : "5",
+            "name" : "task name",
+            "input" : "input",
+            "output" : "output",
+            "conf" : "conf",
+            "start" : "start",
+            "end" : "end",
+            "status" : "SUCCESS"
+        }]
+    }
+];
+
+var source   = $("#entry-template").html();
+Handlebars.registerPartial("module", $("#module-partial").html());
+Handlebars.registerPartial("etlrun", $("#etlrun-partial").html());
+Handlebars.registerHelper('get_status_class_suffix', function(status) {
+    console.log(status);
+    if (status == "PENDING") {
+        return "info";
+    }
+    if (status == "STARTED") {
+        return "success";
+    }
+    if (status == "SUCCESS") {
+        return "success";
+    }
+    if (status == "FAILURE") {
+        return "danger";
+    }
+    return "normal";
+});
+var template = Handlebars.compile(source);
+
+var prevdata = undefined;
+build_panels = function (data) {
+    if (prevdata) {
+        if (JSON.stringify(prevdata) == JSON.stringify(data)) {
+            prevdata = data;
+            return;
+        } else {
+            prevdata = data;
+        }
+    } else {
+        prevdata = data;
+    }
+    var context = {};
+    context["new_etlruns"] = data.filter(function(obj) {
+        return obj.status === "PENDING";
+    });
+    context["failed_etlruns"] = data.filter(function(obj) {
+        return obj.status === "FAILURE";
+    });
+    context["successful_etlruns"] = data.filter(function(obj) {
+        return obj.status === "SUCCESS";
+    });
+
+    var html = template(context);
+    //console.log(data);
+    //console.log(test_data);
+    $('#container').empty();
+    $('#container').append($(html));
+    
+}
+
+//build_panels(test_data);
+var intervalID = window.setInterval(function(){$.getJSON("/getstatus", build_panels)}, 500);
+//$.getJSON("/getstatus", build_panels);
+
+</script>
+
+
+</body>
+</html>
