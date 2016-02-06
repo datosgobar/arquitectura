@@ -19,7 +19,7 @@ def getstatus():
     for er in sess.query(ETLRun).all() :
         etlrun_data = { a: str(getattr(er, a)) for a in ["id", "name", "start", "end", "status"]}
         etlmodulerun_data = []
-        for emr in sess.query(ETLModuleRun).filter(ETLModuleRun.etl_run_id==er.id).all() :
+        for emr in sess.query(ETLModuleRun).filter(ETLModuleRun.etl_run_id==er.id).order_by(ETLModuleRun.id).all() :
             etlmodulerun_data += [{ a: str(getattr(emr, a)) for a in ["id", "task_id", "name", "input", "output", "conf", "start", "end", "status"]}]
         
         etlrun_data["modules"] = etlmodulerun_data

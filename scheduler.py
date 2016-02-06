@@ -14,7 +14,7 @@ app = Celery('task', backend='amqp', broker='amqp://guest@localhost//')
 etl_sequences_dir = "./etl_sequences/"
 modules_file = "./modules.json"
 
-debug_slowdown = 1
+debug_slowdown = 0.35
 #debug_slowdown = None
 
 @app.task
