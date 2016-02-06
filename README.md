@@ -114,6 +114,8 @@ python scheduler_ui.py
 
 #### Como iniciar secuencias de ETL
 Para iniciar la tarea de ETL llamada 'test' tendria que ejecutar este comando:
+```
 $ python -c "from scheduler import start_etl; start_etl.delay(etl_run_name='test')"
+```
 
 
