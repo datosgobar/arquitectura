@@ -22,12 +22,11 @@ la secuencia ETL para ejecutar            ^                 ^
                                    elt_sequences/      modules.json
 ```
 
-1) El proceso inicia cuando se llama a la tarea start_etl a la cual se le pasa como argumento el nombre de la secuencia que se quiere ejecutar, llamemosla dummy_etl.
-2) La tarea start_etl busca el archivo dummy_etl.json en el directorio etl_sequences/, deja configurada la secuencia de modulos correspondiente y la inicia. Con esto se deja indicado que la tareas exec_module sera llamada en el momento que resulte apropiado pasandole una serie de parametros que se describiran mas adelante.
-3) Cuando se ejecuta un modulo se accede al archivo modules.json para determina que comando ejecutar. Este comando se ejecutar junto con los parametros especificados para esa secuencia.
-4) Una vez que el comando termina pueden ocurrir dos cosas:
-- Si el comando termino de manera correcta se procede a llamar al modulo que le sigue en la secuencia si corresponde o bien a la tarea end_etl en la cual se marca al proceso de ETL como exitoso.
-- Caso contrario se llama a la tarea error_handler luego de los cual termina el proceso y se marca ese proceso de ETL como fallido.
+1. El proceso inicia cuando se llama a la tarea start_etl a la cual se le pasa como argumento el nombre de la secuencia que se quiere ejecutar, llamemosla dummy_etl.
+2. La tarea start_etl busca el archivo dummy_etl.json en el directorio etl_sequences/, deja configurada la secuencia de modulos correspondiente y la inicia. Con esto se deja indicado que la tareas exec_module sera llamada en el momento que resulte apropiado pasandole una serie de parametros que se describiran mas adelante.
+3. Cuando se ejecuta un modulo se accede al archivo modules.json para determina que comando ejecutar. Este comando se ejecutar junto con los parametros especificados para esa secuencia.
+4. Una vez que el comando termina pueden ocurrir dos cosas:
+5. Si el comando termino de manera correcta se procede a llamar al modulo que le sigue en la secuencia si corresponde o bien a la tarea end_etl en la cual se marca al proceso de ETL como exitoso. Caso contrario se llama a la tarea error_handler luego de los cual termina el proceso y se marca ese proceso de ETL como fallido.
 
 
 ### Definicion de secuencias ETL
