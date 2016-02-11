@@ -3,6 +3,7 @@
 import os
 import json
 import csv
+import re
 
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy import Table, Column, String, Text, Integer, BigInteger, Float, Boolean, Date, Time, DateTime
@@ -48,26 +49,22 @@ class DBLoaderModule(module_base.ModuleBase) :
             "DateTime" : DateTime,
         }
         
-        # Define tables
+        def get_col_type(typestr) :
+            if col_dtypes.has_key(typestr) :
+                return col_dtypes[typestr]
+            m = re.match("String\s*\(\s*(\d+)\s*\)", typestr)
+            if len(m.groups) == 1 :
+                return String(m.group(1))
+            return None
+        
         tables = {}
         for table_desc in conf["table_desc"] :
             table_name = table_desc["name"]
-            cols = [Column(col["name"], col_dtypes[col["type"]]) for col in table_desc["columns"]]
+            cols = [Column(col["name"], get_col_type(col["type"])) for col in table_desc["columns"]]
             if conf["add_pk"] :
                 cols = [Column('id', Integer, primary_key=True)] + cols
-            table = Table(*([table_name, metadata]+cols))
-            tables[table_name] = table
+            tables[table_name] = Table(*([table_name, metadata]+cols))
         
-        """
-        tables = {
-            td["table_name"] : Table(*[[td["table_name"], metadata] + [
-                Column(col["name"], col_dtypes[col["type"]])
-                    for col in td["columns"
-                ]]
-            ]) for td in conf["table_descs"]
-        }
-        """
-         
         if conf["create_all"] :
             if conf["clear_all_tables_before_insert"] :
                 metadata.drop_all(engine)
