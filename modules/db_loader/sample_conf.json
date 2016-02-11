@@ -1,0 +1,30 @@
+{
+    "create_all" : true,
+    "clear_all_tables_before_insert" : true,
+    "add_pk" : true,
+    "table_desc" : [{
+        "name" : "iris",
+        "columns" : [
+            {
+                "name" : "sepal_length",
+                "type" : "Float"
+            },
+            {
+                "name" : "sepal_width",
+                "type" : "Float"
+            },
+            {
+                "name" : "petal_length",
+                "type" : "Float"
+            },
+            {
+                "name" : "petal_width",
+                "type" : "Float"
+            },
+            {
+                "name" : "flower_class",
+                "type" : "Text"
+            }
+        ]
+    }]
+}
