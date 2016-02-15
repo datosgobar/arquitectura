@@ -18,7 +18,10 @@ class DBLoaderModule(module_base.ModuleBase) :
     conf_text = "Configuration"
     epilog = """
     The name of the input files should be of the form TABLE.FOO.BAR.csv where TABLE is the name of the table where the data will be loaded. The section in middle, FOO.BAR is ignored.
-    Example: python db_loader.py --input data.csv --outpu 
+    Example:
+    ./python db_loader.py --input data.csv \
+                          --output "postgresql+psycopg2://user:pass@localhost/db_name" \
+                          --conf sample_config.json
     """
     input_required = True
     output_required = True
