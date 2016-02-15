@@ -56,11 +56,12 @@ Donde:
 --- name: Nombre de la columna. Debe existir en el archivo de entrada.
 --- type: Tipo de la columna. Puede ser uno de los siguiente: String, Text, Integer, BigInteger, Float, Boolean, Date, Time o DateTime.
 
-### Ejecución:
-
-Archivo principal del modulo es "main.py"
+## Ejecución:
+Archivo principal del modulo es "main.py".
+Si se ejecuta de la siguiente manera se deberia crear una base de datos SQLite en `sample/output.sqlite` con los datos extraidos de `sample/input/iris.csv`.
 ```
-    ./db_loader.py --input archivo/de/entrada/ \
-                          --output "postgresql+psycopg2://user:pass@localhost/db_name" \
-                          --conf sample_conf.json
+    ./db_loader.py --input sample/input/ \
+                          --output "sqlite:///.//sample/output.sqlite" \
+                          --conf sample/conf.json
+
 ```
