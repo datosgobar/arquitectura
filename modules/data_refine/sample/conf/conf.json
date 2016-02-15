@@ -1,0 +1,6 @@
+{
+    "inputs_format" : "csv",
+    "outputs_format" : "csv",
+    "filters_name" : "",
+    "filters_format" : "json"
+}

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import json
+import os
 from os import path
 import sys
 from configs import configs
@@ -70,7 +72,7 @@ class DataRefineModule(module_base.ModuleBase) :
         return self.refine_server_is_reachable(server_url, 2)
 
 
-    def load_inputs(self, inputs_folder):
+    def load_inputs(self, inputs_folder, conf, filters_folder):
         """
         funcion que carga y chequea la existencia de las inputs requeridas.
 
@@ -80,20 +82,15 @@ class DataRefineModule(module_base.ModuleBase) :
         :returns :type Bool:
         """
         app_main_folder = path.dirname(path.abspath(__file__))
-        filters_folder = path.join(app_main_folder, configs.filters_folder)
-        required_inputs = configs.inputs_names
-        required_inputs_format = configs.inputs_format
         response = []
-        for r_input in required_inputs:
-            i_name = '{name}.{format}'.format(name=r_input,
-                                              format=required_inputs_format)
+        for r_input in os.listdir(inputs_folder):
+            i_name = os.path.join(inputs_folder, r_input)
+            r_input = r_input.split(".")[0]
             ref_filter = '{prefix}{name}.{format}'.format(
+                    prefix=conf["filters_name"],
                     name=r_input,
-                    format=configs.filters_format,
-                    prefix=configs.filters_name)
+                    format=conf["filters_format"])
             ref_filter = path.join(filters_folder, ref_filter)
-            i_name = path.join(inputs_folder, i_name)
-            print i_name, ref_filter
             if path.exists(i_name) and path.exists(ref_filter):
                 e = {
                     'name': r_input,
@@ -105,9 +102,8 @@ class DataRefineModule(module_base.ModuleBase) :
                 print 'Error, Archivo requerido no existe'
                 return False
         return response
-
-
-    def push_data_into_refine(self, files_to_refine, output_folder):
+    
+    def push_data_into_refine(self, files_to_refine, output_folder, conf):
         """
         Docstring para que no joda pep8.
 
@@ -134,10 +130,10 @@ class DataRefineModule(module_base.ModuleBase) :
                 print e
                 return False
             try:
-                data_export = '{name}_refined.{format}'.format(
+                outfile = '{name}_refined.{format}'.format(
                                                     name=file_to_refine['name'],
-                                                    format=configs.inputs_format)
-                refined_data = path.join(output_folder, data_export)
+                                                    format=conf["outputs_format"])
+                refined_data = path.join(output_folder, outfile)
                 with open(refined_data, 'w') as data:
                     data.write(p.export_rows().replace('\t', ';'))
                 p.delete_project()
@@ -148,11 +144,14 @@ class DataRefineModule(module_base.ModuleBase) :
         return True
     
     def implementation(self, input=None, output=None, conf=None) :
-        files_dict = self.load_inputs(input)
+        conf_data = json.load(open(path.join(conf, "conf.json")))
+        filters_folder = path.join(conf, "filters")
+        files_dict = self.load_inputs(input, conf_data, filters_folder)
+        print files_dict
         if not files_dict:
             print 'error, fallo carga de inputs requeridas'
             exit(1)
-        if not self.push_data_into_refine(files_dict, output):
+        if not self.push_data_into_refine(files_dict, output, conf_data):
             print 'Fallo Limpieza de datos...'
             exit(1)
         print 'Flawless victory!'

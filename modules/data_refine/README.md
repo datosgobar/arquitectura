@@ -34,7 +34,7 @@
 
   ```Python
   refine_server_config = {
-      'executable_path': '/direccion/a/el/ejecuutable/de/OpenRefine_server',
+      'executable_path': '/direccion/a/el/ejecutable/de/OpenRefine_server',
       'host': 'localhost',
       'port': '3333',
       'protocol': 'http',
@@ -43,13 +43,24 @@
   ```
   *Mas info en repo de [OpenRefine](https://github.com/OpenRefine/OpenRefine)*
 
-* Configurar argumentos requeridos por el modulo:
+### Configuracion de Ejecucion:
+Las configuraciones de cada corrida particular se definien mediante un directorio indicado por el parametro `--config`
+Este directorio debe contener un archivo `config.json` el cual indica parametros generales de ejecucio y un directorio `filters` donde se especifican los filtros de OpenRefine que se van a aplicar a cada archivo de entrada.
 
-  *refine_module/configs/configs.py* [12,0]
+Ejemplo de `config.json`:
+```
+{
+    "inputs_format" : "csv",
+    "filters_name" : "",
+    "filters_format" : "json"
+}
+```
 
-  ```Python
-  cmd_line_args = ['input', 'output']
-  ```
+Donde:
+- inputs_format
+- filters_name: Sufijo utilizando para identificar los nombres de los filtros a aplicar
+- filters_format : "json"
+
 
 * Configurar nombres de las inputs esperadas por el modulo:
 
