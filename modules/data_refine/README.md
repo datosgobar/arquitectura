@@ -1,9 +1,9 @@
 
-# Modulo simple OpenRefine
-### Contenido del Modulo:
+# Modulo simple para filtrado por OpenRefine
+# Contenido del Modulo:
     refine_module
         |
-        `---main.py #main del Modulo
+        `---data_refine.py #main del Modulo
         |
         `---requirements.txt
         |
@@ -11,22 +11,36 @@
         |       |
         |       `---__init__.py
         |       |
-        |       `---configs.py #Configuraciones del Modulo
+        |       `---configs.py # Configuraciones del Modulo
         |
         `---libs
         |     |
-        |     `---refine.py #Lib de OpenRefine
+        |     `---refine.py # Lib de OpenRefine
         |     |
         |     `---__init__.py
         |
-        `---filters
+        `---sample  # Directorio con datos de ejemplo
                 |
-                `---filtro_01.json filtros utilizados con OpenRefine
-                        ...
-### Instalacion:
+                `---input # Directorio de entrada de ejemplo
+                |     |
+                |     `---Contrataciones.csv # Entrada de ejemplo
+                |
+                `---output # Directorio de salida de ejemplo
+                |     |
+                |     `---Contrataciones_refined_test.csv # Salida esperada de la ejecucion de ejemplo
+                |
+                `---conf # Directorio de configuracion de ejemplo
+                        |
+                        `---conf.json # Archivo de configuracion
+                        |
+                        `---filters # Directorio con filtros
+                              |
+                              `---Contrataciones.json # Filtro que se aplica a Contrataciones.csv
+
+# Instalacion:
     sudo pip install -r requirements.txt
 
-### Preconfiguracion:
+# Preconfiguracion:
 
 * Configurar parametro para servidor de OpenRefine en:
 
@@ -43,7 +57,7 @@
   ```
   *Mas info en repo de [OpenRefine](https://github.com/OpenRefine/OpenRefine)*
 
-### Configuracion de Ejecucion:
+# Configuracion de Ejecuciones:
 Las configuraciones de cada corrida particular se definien mediante un directorio indicado por el parametro `--config`
 Este directorio debe contener un archivo `config.json` el cual indica parametros generales de ejecucio y un directorio `filters` donde se especifican los filtros de OpenRefine que se van a aplicar a cada archivo de entrada.
 
@@ -57,40 +71,14 @@ Ejemplo de `config.json`:
 ```
 
 Donde:
-- inputs_format
-- filters_name: Sufijo utilizando para identificar los nombres de los filtros a aplicar
+- inputs_format: Formato de los archivos de entrada. (Eg: csv)
+- outputs_format: Formato de los archivos de entrada. (Eg: csv)
+- filters_name: Prefijo utilizando para identificar a qlos nombres de los filtros a aplicar
 - filters_format : "json"
 
+# Ejecución:
 
-* Configurar nombres de las inputs esperadas por el modulo:
+Archivo principal del modulo es "data_refine.py"
 
-    *refine_module/configs/configs.py* [13,0]
+    ./data_refine.py --input ./sample/input/ --output ./sample/output/ --conf ./sample/conf/
 
-    ```Python
-    inputs_names = ['data00', 'data01', 'data02']
-    ```
-
-* Configurar formato de las inputs esperadas por el modulo:
-
-    *refine_module/configs/configs.py* [14,0]
-
-    ```Python
-    inputs_format = 'csv'
-    ```
-
-* Configurar filtros:
-
-    *refine_module/configs/configs.py* [15,0]
-
-    ```Python
-    filters_name = 'filter_'
-  filters_folder = 'filters'
-  filters_format = 'json'
-    ```
-
-
-### Ejecución:
-
-Archivo principal del modulo es "main.py"
-
-    ./main.py --input carpeta/de/entrada --output carpeta/de/salida
