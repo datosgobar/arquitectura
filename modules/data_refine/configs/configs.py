@@ -10,8 +10,8 @@ refine_server_config = {
 }
 
 cmd_line_args = ['input', 'output']
-inputs_names = ['data00', 'data01', 'data02']
+inputs_names = ['Contrataciones']
 inputs_format = 'csv'
-filters_name = 'filter_'
+filters_name = ''
 filters_folder = 'filters'
 filters_format = 'json'

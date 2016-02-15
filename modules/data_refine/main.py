@@ -23,7 +23,7 @@ class DataRefineModule(module_base.ModuleBase) :
     conf_required = True
 
 
-    def refine_server_is_recheable(self, server_url, check_cout=1):
+    def refine_server_is_reachable(self, server_url, check_cout=1):
         """Funcion que chequea que que pueda acceder al servidor de OpenRefine.
 
         :type server_url: Str
@@ -67,7 +67,7 @@ class DataRefineModule(module_base.ModuleBase) :
         # Espero 10 segundos hasta que termine de iniciar el server de openRefine,
         # para chequear q verdaderamente este en funcionamiento
         time.sleep(10)
-        return self.refine_server_is_recheable(server_url, 2)
+        return self.refine_server_is_reachable(server_url, 2)
 
 
     def load_inputs(self, inputs_folder):
@@ -122,7 +122,7 @@ class DataRefineModule(module_base.ModuleBase) :
                 protocol=configs.refine_server_config['protocol'].lower())
         for file_to_refine in files_to_refine:
             try:
-                if not self.refine_server_is_recheable(open_refine_server):
+                if not self.refine_server_is_reachable(open_refine_server):
                     if not self.start_refine_server(
                             configs.refine_server_config,
                             open_refine_server):
