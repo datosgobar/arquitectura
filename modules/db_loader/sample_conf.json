@@ -2,6 +2,7 @@
     "create_all" : true,
     "clear_all_tables_before_insert" : true,
     "add_pk" : true,
+    "delimiter" : ",",
     "table_desc" : [{
         "name" : "iris",
         "columns" : [

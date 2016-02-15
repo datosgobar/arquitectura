@@ -32,6 +32,7 @@ Dicho archivo tiene la estructura:
     "create_all" : true,
     "clear_all_tables_before_insert" : true,
     "add_pk" : true,
+    "delimiter" : ",",
     "table_desc" : [{
         "name" : "iris",
         "columns" : [
@@ -48,6 +49,7 @@ Donde:
 - create_all: Crear todas las tablas
 - clear_all_tables_before_insert" : Dropea todas las tablas antes de cargarlas
 - add_pk: Crea una primary key `id` para la nueva tabla
+- delimiter: Caracter de separacion entre campos
 - table_desc: Descripcion de la tabla
 -- name: Nombre de la tabla donde se van a cargar los datos. El nombre del archivo input debe comenzar con el nombre de la tabla objetivo.
 -- columns: Especificacion de las columnas de la tabla
@@ -58,7 +60,7 @@ Donde:
 
 Archivo principal del modulo es "main.py"
 ```
-    ./python db_loader.py --input arhivo/de/entrada/iris.csv \
+    ./db_loader.py --input archivo/de/entrada/ \
                           --output "postgresql+psycopg2://user:pass@localhost/db_name" \
-                          --conf sample_config.json
+                          --conf sample_conf.json
 ```

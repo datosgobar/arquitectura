@@ -35,6 +35,7 @@ class DBLoaderModule(module_base.ModuleBase) :
         indir = input
         connstr = output
         conf = json.load(open(conf))
+        delimiter = str(conf.get("delimiter", ","))
         
         engine = create_engine(connstr, echo=False)
         conn = engine.connect()
@@ -61,8 +62,12 @@ class DBLoaderModule(module_base.ModuleBase) :
             return None
         
         tables = {}
+        table_col_renamer = {}
         for table_desc in conf["table_desc"] :
             table_name = table_desc["name"]
+            
+            table_col_renamer[table_name] = { col.get("name_orig", col["name"]) : col["name"] for col in table_desc["columns"] }
+
             cols = [Column(col["name"], get_col_type(col["type"])) for col in table_desc["columns"]]
             if conf["add_pk"] :
                 cols = [Column('id', Integer, primary_key=True)] + cols
@@ -76,15 +81,15 @@ class DBLoaderModule(module_base.ModuleBase) :
         for fn in os.listdir(indir) :
             infpath = os.path.join(os.path.join(indir, fn))
             aux = fn.split(".")
-            if len(aux) < 2 and aux[-1] != "csv" :
+            if len(aux) < 2 or aux[-1] != "csv"  or not aux[0] in tables.keys() :
                 continue
             
             table_name = aux[0]
             
             print "Loading file %s in %s table..." % (infpath, table_name)
             inf = open(infpath)
-            
-            conn.execute(tables[table_name].insert(), [row for row in csv.DictReader(inf)])
+            row_data = [ {table_col_renamer[table_name][k]:v for (k,v) in row.items() } for row in csv.DictReader(inf, delimiter=delimiter) ]
+            conn.execute(tables[table_name].insert(), row_data)
             inf.close()
             "Done"
 
