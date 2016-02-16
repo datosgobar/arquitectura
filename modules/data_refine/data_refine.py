@@ -3,7 +3,6 @@
 import json
 import os
 from os import path
-import sys
 from configs import configs
 from libs import refine
 import urllib2
@@ -12,8 +11,9 @@ import time
 
 import module_base
 
-class DataRefineModule(module_base.ModuleBase) :
-    prog_text   = "main.py"
+
+class DataRefineModule(module_base.ModuleBase):
+    prog_text = "main.py"
     desc_text = "Process input files with the given filters using OpenRefine"
     input_text = "Directory where the input CSVs are stored"
     output_text = "Directory where the output files will be stored"
@@ -23,7 +23,6 @@ class DataRefineModule(module_base.ModuleBase) :
     input_required = True
     output_required = True
     conf_required = True
-
 
     def refine_server_is_reachable(self, server_url, check_cout=1):
         """Funcion que chequea que que pueda acceder al servidor de OpenRefine.
@@ -39,7 +38,6 @@ class DataRefineModule(module_base.ModuleBase) :
             print 'El servidor no es accesible, intento: %d' % check_cout
             return False
         return True
-
 
     def start_refine_server(self, server_settings, server_url):
         """funcion que intenta iniciar el servidor de OpenRefine.
@@ -66,19 +64,18 @@ class DataRefineModule(module_base.ModuleBase) :
         except OSError:
             print 'Error al ejecutar comando'
 
-        # Espero 10 segundos hasta que termine de iniciar el server de openRefine,
-        # para chequear q verdaderamente este en funcionamiento
+        # Espero 10 segundos hasta que termine de iniciar el server de
+        # openRefine, para chequear q verdaderamente este en funcionamiento
         time.sleep(10)
         return self.refine_server_is_reachable(server_url, 2)
-
 
     def load_inputs(self, inputs_folder, conf, filters_folder):
         """
         funcion que carga y chequea la existencia de las inputs requeridas.
 
         :type inputs_folder: Str
-        :param inputs_folder: String provisto por cmd-line args, especifica donde
-                              se encuentran las inputs requeridas.
+        :param inputs_folder: String provisto por cmd-line args, especifica
+                              donde se encuentran las inputs requeridas.
         :returns :type Bool:
         """
         app_main_folder = path.dirname(path.abspath(__file__))
@@ -87,9 +84,9 @@ class DataRefineModule(module_base.ModuleBase) :
             i_name = os.path.join(inputs_folder, r_input)
             r_input = r_input.split(".")[0]
             ref_filter = '{prefix}{name}.{format}'.format(
-                    prefix=conf["filters_name"],
-                    name=r_input,
-                    format=conf["filters_format"])
+                prefix=conf["filters_name"],
+                name=r_input,
+                format=conf["filters_format"])
             ref_filter = path.join(filters_folder, ref_filter)
             if path.exists(i_name) and path.exists(ref_filter):
                 e = {
@@ -102,7 +99,7 @@ class DataRefineModule(module_base.ModuleBase) :
                 print 'Error, Archivo requerido no existe'
                 return False
         return response
-    
+
     def push_data_into_refine(self, files_to_refine, output_folder, conf):
         """
         Docstring para que no joda pep8.
@@ -113,9 +110,9 @@ class DataRefineModule(module_base.ModuleBase) :
         :param files_to_refine:
         """
         open_refine_server = '{protocol}://{host}:{port}'.format(
-                host=configs.refine_server_config['host'].lower(),
-                port=configs.refine_server_config['port'],
-                protocol=configs.refine_server_config['protocol'].lower())
+            host=configs.refine_server_config['host'].lower(),
+            port=configs.refine_server_config['port'],
+            protocol=configs.refine_server_config['protocol'].lower())
         for file_to_refine in files_to_refine:
             try:
                 if not self.refine_server_is_reachable(open_refine_server):
@@ -131,9 +128,9 @@ class DataRefineModule(module_base.ModuleBase) :
                 return False
             try:
                 outfile = '{name}{suffix}.{format}'.format(
-                                                    name=file_to_refine['name'],
-                                                    suffix=conf["outputs_suffix"],
-                                                    format=conf["outputs_format"])
+                    name=file_to_refine['name'],
+                    suffix=conf["outputs_suffix"],
+                    format=conf["outputs_format"])
                 refined_data = path.join(output_folder, outfile)
                 with open(refined_data, 'w') as data:
                     data.write(p.export_rows().replace('\t', ';'))
@@ -143,8 +140,8 @@ class DataRefineModule(module_base.ModuleBase) :
                       '\n{Exception_msg}'.format(Exception_msg=e)
                 return False
         return True
-    
-    def implementation(self, input=None, output=None, conf=None) :
+
+    def implementation(self, input=None, output=None, conf=None):
         conf_data = json.load(open(path.join(conf, "conf.json")))
         filters_folder = path.join(conf, "filters")
         files_dict = self.load_inputs(input, conf_data, filters_folder)
