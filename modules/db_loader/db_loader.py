@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import os
 import json
@@ -6,7 +7,7 @@ import csv
 import re
 
 from sqlalchemy import create_engine, MetaData
-from sqlalchemy import Table, Column, String, Text, Integer, BigInteger, Float, Boolean, Date, Time, DateTime
+from sqlalchemy import Table, Column, String, UnicodeText, Text, Integer, BigInteger, Float, Boolean, Date, Time, DateTime
 
 import module_base
 
@@ -43,6 +44,7 @@ class DBLoaderModule(module_base.ModuleBase) :
         
         col_dtypes = {
             "String" : String(255),
+            "UnicodeText" : UnicodeText(255),
             "Text" : Text,
             "Integer" : Integer,
             "BigInteger" : BigInteger,
@@ -57,8 +59,13 @@ class DBLoaderModule(module_base.ModuleBase) :
             if col_dtypes.has_key(typestr) :
                 return col_dtypes[typestr]
             m = re.match("String\s*\(\s*(\d+)\s*\)", typestr)
-            if len(m.groups) == 1 :
+            if m and len(m.groups) == 1 :
                 return String(m.group(1))
+            
+            m = re.match("UnicodeText\s*\(\s*(\d+)\s*\)", typestr)
+            if m and len(m.groups) == 1 :
+                return UnicodeText(m.group(1))
+
             return None
         
         tables = {}
@@ -83,12 +90,12 @@ class DBLoaderModule(module_base.ModuleBase) :
             aux = fn.split(".")
             if len(aux) < 2 or aux[-1] != "csv"  or not aux[0] in tables.keys() :
                 continue
-            
             table_name = aux[0]
             
             print "Loading file %s in %s table..." % (infpath, table_name)
             inf = open(infpath)
-            row_data = [ {table_col_renamer[table_name][k]:v for (k,v) in row.items() } for row in csv.DictReader(inf, delimiter=delimiter) ]
+            row_data = csv.DictReader(inf, delimiter=delimiter)
+            row_data = [ {table_col_renamer[table_name][k]:unicode(v, 'utf-8') for (k,v) in row.items() if table_col_renamer[table_name].has_key(k) } for row in row_data]
             conn.execute(tables[table_name].insert(), row_data)
             inf.close()
             "Done"
