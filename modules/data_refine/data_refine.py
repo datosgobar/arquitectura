@@ -130,8 +130,9 @@ class DataRefineModule(module_base.ModuleBase) :
                 print e
                 return False
             try:
-                outfile = '{name}_refined.{format}'.format(
+                outfile = '{name}{suffix}.{format}'.format(
                                                     name=file_to_refine['name'],
+                                                    suffix=conf["outputs_suffix"],
                                                     format=conf["outputs_format"])
                 refined_data = path.join(output_folder, outfile)
                 with open(refined_data, 'w') as data:
@@ -147,7 +148,6 @@ class DataRefineModule(module_base.ModuleBase) :
         conf_data = json.load(open(path.join(conf, "conf.json")))
         filters_folder = path.join(conf, "filters")
         files_dict = self.load_inputs(input, conf_data, filters_folder)
-        print files_dict
         if not files_dict:
             print 'error, fallo carga de inputs requeridas'
             exit(1)

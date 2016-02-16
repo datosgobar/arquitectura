@@ -65,6 +65,8 @@ Ejemplo de `config.json`:
 ```
 {
     "inputs_format" : "csv",
+    "outputs_format" : "csv",
+    "outputs_suffix" : "_refined",
     "filters_name" : "",
     "filters_format" : "json"
 }
@@ -73,12 +75,14 @@ Ejemplo de `config.json`:
 Donde:
 - inputs_format: Formato de los archivos de entrada. (Eg: csv)
 - outputs_format: Formato de los archivos de entrada. (Eg: csv)
+- outputs_suffix: Sufijo prependeado a los archivos de salida. (Eg: _refined)
 - filters_name: Prefijo utilizando para identificar a qlos nombres de los filtros a aplicar
 - filters_format : "json"
 
 # Ejecución:
 
-Archivo principal del modulo es "data_refine.py"
-
+Archivo principal del modulo es "data_refine.py".
+El siguiente comando realiza una transformacion siguiendo las configuraciones de ejemplo
+```
     ./data_refine.py --input ./sample/input/ --output ./sample/output/ --conf ./sample/conf/
-
+```

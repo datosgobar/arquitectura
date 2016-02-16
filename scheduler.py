@@ -3,6 +3,7 @@ import json
 import subprocess
 import datetime
 import time
+import os
 
 from celery import Celery
 from celery.exceptions import Ignore
@@ -90,6 +91,8 @@ def exec_module(self, etl_module_run_id=None, module_name=None, input=None, outp
     
     modules = json.load(open(modules_file))
     module_cmd = modules[module_name]["cmd"]
+    if not os.path.isabs(module_cmd) :
+        module_cmd = os.path.abspath(os.path.join(os.path.dirname(modules_file), module_cmd))
     
     module_params = []
     if input :

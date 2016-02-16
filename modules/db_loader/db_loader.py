@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import os
 import json
@@ -6,7 +7,7 @@ import csv
 import re
 
 from sqlalchemy import create_engine, MetaData
-from sqlalchemy import Table, Column, String, Text, Integer, BigInteger, Float, Boolean, Date, Time, DateTime
+from sqlalchemy import Table, Column, String, UnicodeText, Text, Integer, BigInteger, Float, Boolean, Date, Time, DateTime
 
 import module_base
 
@@ -35,6 +36,7 @@ class DBLoaderModule(module_base.ModuleBase) :
         indir = input
         connstr = output
         conf = json.load(open(conf))
+        delimiter = str(conf.get("delimiter", ","))
         
         engine = create_engine(connstr, echo=False)
         conn = engine.connect()
@@ -42,6 +44,7 @@ class DBLoaderModule(module_base.ModuleBase) :
         
         col_dtypes = {
             "String" : String(255),
+            "UnicodeText" : UnicodeText(255),
             "Text" : Text,
             "Integer" : Integer,
             "BigInteger" : BigInteger,
@@ -56,13 +59,22 @@ class DBLoaderModule(module_base.ModuleBase) :
             if col_dtypes.has_key(typestr) :
                 return col_dtypes[typestr]
             m = re.match("String\s*\(\s*(\d+)\s*\)", typestr)
-            if len(m.groups) == 1 :
+            if m and len(m.groups) == 1 :
                 return String(m.group(1))
+            
+            m = re.match("UnicodeText\s*\(\s*(\d+)\s*\)", typestr)
+            if m and len(m.groups) == 1 :
+                return UnicodeText(m.group(1))
+
             return None
         
         tables = {}
+        table_col_renamer = {}
         for table_desc in conf["table_desc"] :
             table_name = table_desc["name"]
+            
+            table_col_renamer[table_name] = { col.get("name_orig", col["name"]) : col["name"] for col in table_desc["columns"] }
+
             cols = [Column(col["name"], get_col_type(col["type"])) for col in table_desc["columns"]]
             if conf["add_pk"] :
                 cols = [Column('id', Integer, primary_key=True)] + cols
@@ -76,15 +88,15 @@ class DBLoaderModule(module_base.ModuleBase) :
         for fn in os.listdir(indir) :
             infpath = os.path.join(os.path.join(indir, fn))
             aux = fn.split(".")
-            if len(aux) < 2 and aux[-1] != "csv" :
+            if len(aux) < 2 or aux[-1] != "csv"  or not aux[0] in tables.keys() :
                 continue
-            
             table_name = aux[0]
             
             print "Loading file %s in %s table..." % (infpath, table_name)
             inf = open(infpath)
-            
-            conn.execute(tables[table_name].insert(), [row for row in csv.DictReader(inf)])
+            row_data = csv.DictReader(inf, delimiter=delimiter)
+            row_data = [ {table_col_renamer[table_name][k]:unicode(v, 'utf-8') for (k,v) in row.items() if table_col_renamer[table_name].has_key(k) } for row in row_data]
+            conn.execute(tables[table_name].insert(), row_data)
             inf.close()
             "Done"
 
