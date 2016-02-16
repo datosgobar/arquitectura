@@ -25,5 +25,11 @@
     },
     "jose_loader" : {
         "cmd" : "/media/D/gobar/data_architecture/scripts/my_modules/push_db_module.py"
+    },
+    "data_refine" : {
+        "cmd" : "./modules/data_refine/data_refine.py"
+    },
+    "db_loader" : {
+        "cmd" : "./modules/db_loader/db_loader.py"
     }
 }

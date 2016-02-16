@@ -1,7 +1,7 @@
 {
     "inputs_format" : "csv",
     "outputs_format" : "csv",
-    "outputs_suffix" : "_refined",
+    "outputs_suffix" : "",
     "filters_name" : "",
     "filters_format" : "json"
 }

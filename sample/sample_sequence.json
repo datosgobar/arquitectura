@@ -1,0 +1,14 @@
+[
+    {
+        "module_name" : "data_refine",
+        "input" : "/tmp/scheduler_sample/input",
+        "output" : "/tmp/scheduler_sample/refine_output",
+        "conf" : "/tmp/scheduler_sample/refine_conf/"
+    },
+    {
+        "module_name" : "db_loader",
+        "input" : "/tmp/scheduler_sample/refine_output",
+        "output" : "sqlite:////tmp/scheduler_sample/contrataciones.sqlite",
+        "conf" : "/tmp/scheduler_sample/db_loader.conf"
+    }
+]
